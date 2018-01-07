@@ -1,0 +1,56 @@
+---
+
+- name: Check journalbeat version match
+  command: /usr/local/bin/journalbeat -version | grep -Fq '{{ journalbeat_version }}'
+  register: journalbeat_version_match
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: Get requested journalbeat version
+  get_url:
+    url: 'https://github.com/mheese/journalbeat/releases/download/v{{ journalbeat_version }}/journalbeat-debian'
+    dest: /usr/local/bin/journalbeat
+    force: yes
+    mode: 0755
+  when: journalbeat_version_match.rc != 0
+  register: journalbeat_binary
+
+- name: Install configuration
+  copy:
+    content: |
+      # Ansible managed
+
+      {{ journalbeat_config | to_nice_yaml }}
+    dest: /etc/journalbeat.yaml
+    owner: root
+    mode: 0600
+  register: journalbeat_configfile
+
+- name: Install systemd service
+  copy:
+    content: |
+      [Unit]
+      Description=JournalBeat log streaming service
+      After=network-online.target
+      Requires=network-online.target
+
+      [Service]
+      ExecStart=/usr/local/bin/journalbeat -c /etc/journalbeat.yaml
+      Restart=on-failure
+      RestartSecs=5
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/journalbeat.service
+  register: journalbeat_service
+
+- name: Restart and enable service
+  systemd:
+    name: journalbeat.service
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+  when: journalbeat_configfile.changed or journalbeat_service.changed or journalbeat_binary.changed
+
+...

@@ -1,0 +1,23 @@
+---
+
+# Initial config retrieved through:
+#   $ curl -sL "https://github.com/mheese/journalbeat/raw/master/etc/journalbeat.yml" | grep -Ev "^(\s*#.*|)$"
+#
+# Modifications:
+# - Disable index template as there is no useful template right now
+#
+# For full configuration options see example configuration at
+#   https://github.com/mheese/journalbeat/blob/master/etc/journalbeat.yml
+
+journalbeat_config:
+  journalbeat:
+  name: journalbeat
+  output.elasticsearch:
+    hosts: ["localhost:9200"]
+    template.enabled: false  # modified
+  logging.to_files: true
+  logging.files:
+
+journalbeat_version: 5.6.0
+
+...
