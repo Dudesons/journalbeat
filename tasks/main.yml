@@ -36,7 +36,10 @@
       Requires=network-online.target
 
       [Service]
-      ExecStart=/usr/local/bin/journalbeat -c /etc/journalbeat.yaml
+      ExecStart=/usr/local/bin/journalbeat \
+                  -c /etc/journalbeat.yaml \
+                  -path.home /var/lib/journalbeat \
+                  -path.logs /var/log
       Restart=on-failure
       RestartSecs=5
 
