@@ -41,7 +41,8 @@
                   -path.home /var/lib/journalbeat \
                   -path.logs /var/log
       Restart=on-failure
-      RestartSecs=5
+      RestartSec=5
+      WorkingDirectory=/var/lib/journalbeat
 
       [Install]
       WantedBy=multi-user.target
