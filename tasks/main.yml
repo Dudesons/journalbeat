@@ -41,10 +41,14 @@
       Requires=network-online.target
 
       [Service]
+      # Workaround: This file gets corrupted on unclean exit and then bricks the process
+      ExecStartPre=-/bin/rm /var/lib/journalbeat/.journalbeat-pending-queue
+
       ExecStart=/usr/local/bin/journalbeat \
                   -c /etc/journalbeat.yaml \
                   -path.home /var/lib/journalbeat \
                   -path.logs /var/log
+
       Restart=on-failure
       RestartSec=5
       WorkingDirectory=/var/lib/journalbeat
