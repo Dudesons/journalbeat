@@ -27,6 +27,11 @@
     mode: 0600
   register: journalbeat_configfile
 
+- name: Create WorkingDirectory
+  file:
+    dest: /var/lib/journalbeat
+    state: directory
+
 - name: Install systemd service
   copy:
     content: |
