@@ -7,9 +7,14 @@
   ignore_errors: yes
   changed_when: no
 
+- name: Set download URL
+  set_fact:
+    journalbeat_download_url: 'https://github.com/mheese/journalbeat/releases/download/v{{ journalbeat_version }}/journalbeat-debian'
+  when: journalbeat_download_url is not defined
+
 - name: Get requested journalbeat version
   get_url:
-    url: 'https://github.com/mheese/journalbeat/releases/download/v{{ journalbeat_version }}/journalbeat-debian'
+    url: '{{ journalbeat_download_url }}'
     dest: /usr/local/bin/journalbeat
     force: yes
     mode: 0755
