@@ -1,3 +1,7 @@
+# 0.2.0 / 2018-01-21
+
+  * Allow overriding download url
+
 # 0.1.2 / 2018-01-13
 
   * Fix: Programmatically work around bricked pending-queue
